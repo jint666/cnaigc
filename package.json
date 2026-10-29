@@ -1,0 +1,15 @@
+{
+  "name": "mosheng-oriental-aigc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "墨生 · 中式美学 AIGC 提示词润色与 Seedream 生图 Demo",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

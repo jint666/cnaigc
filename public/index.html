@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f2ede3" />
+  <meta name="description" content="墨生 · 中式美学 AIGC：以 RAG 美学知识库润色提示词，并调用 Seedream / CogView 生成东方画面。" />
+  <title>墨生 · 中式美学 AIGC</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="app">
+    <aside class="sidebar" aria-label="主导航">
+      <a class="seal" href="/" aria-label="墨生首页">
+        <span>墨</span>
+        <i></i>
+      </a>
+      <nav class="side-nav">
+        <button class="side-link is-active" type="button" data-nav="studio" aria-label="创作台">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5c4.2 1 6.2-.9 7.2-3.3.9-2.2 2.2-4 4.7-5.3 2.2-1.2 3.5-2.8 4-4.7M4 19.5c.2-3.2 1.9-5.6 4.7-6.7 2.1-.8 3.8-2.2 5-4.5"/><circle cx="18.2" cy="4.8" r="1.6"/></svg>
+          <span>创作</span>
+        </button>
+        <button class="side-link" type="button" data-nav="knowledge" aria-label="美学知识库">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 5.5c2.8-1.2 5.1-.8 7.5 1v13c-2.4-1.8-4.7-2.2-7.5-1v-13Z"/><path d="M19.5 5.5c-2.8-1.2-5.1-.8-7.5 1v13c2.4-1.8 4.7-2.2 7.5-1v-13Z"/></svg>
+          <span>语料</span>
+        </button>
+      </nav>
+      <div class="side-bottom">
+        <button class="side-mini" id="aboutBtn" type="button" aria-label="关于墨生">?</button>
+        <span class="side-rule"></span>
+        <span class="side-mark">MS<br>26</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="wordmark">
+          <span class="wordmark-cn">墨生</span>
+          <span class="wordmark-en">MOSHENG · STUDIO</span>
+        </div>
+        <div class="top-meta">
+          <button class="engine-pill" id="enginePill" type="button" title="查看运行状态">
+            <i class="status-dot"></i>
+            <span id="engineText">正在连接</span>
+          </button>
+          <button class="knowledge-btn" id="openKnowledge" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 5.5c2.8-1.2 5.1-.8 7.5 1v13c-2.4-1.8-4.7-2.2-7.5-1v-13Z"/><path d="M19.5 5.5c-2.8-1.2-5.1-.8-7.5 1v13c2.4-1.8 4.7-2.2 7.5-1v-13Z"/></svg>
+            <span>美学知识库</span>
+            <b id="kbCount">—</b>
+          </button>
+          <button class="knowledge-btn history-btn" id="openHistory" type="button" title="最近 10 条生成记录">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.4"/><path d="M12 7.8v4.6l3.1 1.8"/></svg>
+            <span>生成记录</span>
+            <b id="historyCount">0</b>
+          </button>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="stage" id="stage">
+          <div class="intro" id="intro">
+            <p class="eyebrow"><span></span>ORIENTAL AESTHETICS · AIGC</p>
+            <h1>以文造境，<br /><em>见东方之美。</em></h1>
+            <p class="intro-copy">把一句日常描述，交给一座中式美学语料库。<br />检索、解构、润色，再落成一幅可信的东方画面。</p>
+            <div class="intro-index">
+              <div><strong id="introKbCount">—</strong><small>美学语料</small></div>
+              <div><strong>RAG</strong><small>检索增强</small></div>
+              <div><strong>2</strong><small>生图模型</small></div>
+            </div>
+          </div>
+
+          <div class="ink-stage" aria-hidden="true">
+            <div class="sun-disc"></div>
+            <div class="ink-ring"></div>
+            <svg class="mountain" viewBox="0 0 620 360" preserveAspectRatio="xMidYMax meet">
+              <path class="m1" d="M-20 304C46 248 114 190 182 205c50 11 62 42 121 28 62-14 91-91 151-83 51 7 86 61 118 95 24 25 51 47 78 54" />
+              <path class="m2" d="M-20 330c80-49 139-91 210-75 54 12 69 46 128 30 67-18 94-80 155-65 45 11 73 54 100 85 21 25 41 38 67 50" />
+              <path class="m3" d="M-20 356c92-25 160-62 239-48 51 9 74 36 126 24 67-16 108-57 168-39 42 13 67 36 107 54" />
+            </svg>
+            <div class="vertical-poem"><span>器</span><span>以</span><span>载</span><span>道</span></div>
+            <div class="ink-caption">
+              <span>留白</span>
+              <span class="caption-line"></span>
+              <span>东方视觉语言</span>
+            </div>
+            <div class="ink-seal">墨<br />生</div>
+          </div>
+        </section>
+
+        <section class="result-area" id="resultArea" hidden>
+          <div class="result-head">
+            <div>
+              <p class="eyebrow"><span></span>GENERATED · EASTERN AESTHETICS</p>
+              <h2 id="resultTitle">东方画面</h2>
+            </div>
+            <div class="result-actions">
+              <button class="line-btn" id="viewPrompt" type="button">润色手记</button>
+              <button class="line-btn" id="newWork" type="button">重新开始</button>
+            </div>
+          </div>
+          <div class="result-body">
+            <div class="result-grid" id="resultGrid"></div>
+            <aside class="work-note">
+              <p class="note-kicker">PROMPT NOTE</p>
+              <p class="note-prompt" id="notePrompt"></p>
+              <div class="note-meta">
+                <span id="noteMetaEngine">RAG</span>
+                <span id="noteMetaModel">Seedream 4.6</span>
+                <span id="noteMetaStrength">雅致</span>
+                <span id="noteMetaRatio">1:1</span>
+              </div>
+              <div class="note-block note-block--first">
+                <p class="note-label">视觉关键词</p>
+                <div class="chips" id="noteKeywords"></div>
+              </div>
+              <div class="note-block">
+                <p class="note-label">语料依据</p>
+                <div class="note-refs" id="noteRefs"></div>
+              </div>
+              <button class="note-link" id="noteMore" type="button">查看完整润色过程 <span>↗</span></button>
+            </aside>
+          </div>
+          <div class="result-warning" id="resultWarning" hidden></div>
+        </section>
+
+        <section class="workbench" id="workbench">
+          <div class="composer">
+            <div class="composer-top">
+              <span class="composer-label">描述画面</span>
+              <span class="composer-tip"><span id="charCount">0</span> / 800 <i></i> Ctrl / ⌘ + Enter</span>
+            </div>
+            <textarea id="promptInput" maxlength="800" rows="2" placeholder="例如：一把紫砂壶，放在原木茶席上，午后有光……"></textarea>
+            <div class="idea-row">
+              <span>试试</span>
+              <button class="idea" type="button" data-idea="一把紫砂壶，放在原木茶席上，午后窗光">紫砂茶席</button>
+              <button class="idea" type="button" data-idea="雨后的江南园林，月洞门里有一枝竹">雨后园林</button>
+              <button class="idea" type="button" data-idea="穿宋制汉服的女子，站在回廊下，垂眸">宋制仕女</button>
+              <button class="idea" type="button" data-idea="一只汝窑天青釉花器，插一枝白梅">汝窑花器</button>
+            </div>
+            <div class="composer-divider"></div>
+            <div class="composer-controls">
+              <div class="control-group">
+                <span class="control-label">润色</span>
+                <div class="segmented" id="strengthSeg">
+                  <button type="button" data-strength="light">轻</button>
+                  <button type="button" data-strength="medium" class="is-active">雅</button>
+                  <button type="button" data-strength="deep">极</button>
+                </div>
+                <span class="control-hint" id="strengthHint">主体 + 美学结构</span>
+              </div>
+              <div class="selects">
+                <label class="select-wrap select-wrap--llm"><span>润色</span><select id="llmModelSelect"></select></label>
+                <label class="select-wrap select-wrap--model"><span>生图</span><select id="imageModelSelect"></select></label>
+                <label class="select-wrap"><span>风格</span><select id="styleSelect"></select></label>
+                <label class="select-wrap"><span>比例</span><select id="ratioSelect"></select></label>
+                <label class="select-wrap"><span>数量</span><select id="countSelect"><option value="1">1 张</option><option value="2">2 张</option><option value="4">4 张</option></select></label>
+              </div>
+              <div class="send-actions">
+                <button class="polish-btn" id="polishBtn" type="button">仅润色</button>
+                <button class="generate-btn" id="generateBtn" type="button">
+                  <span class="btn-text">润色并生成</span>
+                  <span class="btn-arrow">↗</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="composer-foot">
+            <span id="footEngine">本地策展引擎 · 生图模型可切换</span>
+            <span>·</span>
+            <span>生成内容仅供创作参考</span>
+          </p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="loading" id="loading" hidden>
+    <div class="loading-scrim"></div>
+    <div class="loading-card">
+      <div class="loading-seal"><span>墨</span><i></i></div>
+      <p class="loading-kicker">MO SHENG · AT WORK</p>
+      <h3 id="loadingTitle">正在检索美学语料</h3>
+      <div class="loading-steps" id="loadingSteps">
+        <div class="loading-step" data-step="0"><i></i><span>检索中式美学语料</span></div>
+        <div class="loading-step" data-step="1"><i></i><span>解构主体、材质与光影</span></div>
+        <div class="loading-step" data-step="2"><i></i><span>组织专业提示词</span></div>
+        <div class="loading-step" data-step="3"><i></i><span id="loadingImageStep">生图模型落墨成像</span></div>
+      </div>
+      <p class="loading-quote" id="loadingQuote">“ 大音希声，大象无形。 ”</p>
+      <p class="loading-time" id="loadingTime">0.0s</p>
+    </div>
+  </div>
+
+  <dialog class="prompt-dialog" id="promptDialog">
+    <div class="dialog-inner">
+      <header class="dialog-head">
+        <div>
+          <p class="eyebrow"><span></span>PROMPT NOTES</p>
+          <h2>润色手记</h2>
+        </div>
+        <button class="dialog-close" id="dialogClose" type="button" aria-label="关闭">×</button>
+      </header>
+      <div class="dialog-warning" id="dialogWarning" hidden></div>
+      <div class="prompt-compare">
+        <div class="compare-block">
+          <p class="note-label">原始描述</p>
+          <p id="originalText"></p>
+        </div>
+        <div class="compare-arrow">→</div>
+        <div class="compare-block is-polished">
+          <p class="note-label">专业提示词</p>
+          <p id="polishedText"></p>
+        </div>
+      </div>
+      <div class="dialog-grid">
+        <section>
+          <p class="note-label">检索到的美学语料 <span id="refCount" class="label-count"></span></p>
+          <div class="dialog-refs" id="refList"></div>
+        </section>
+        <section>
+          <p class="note-label">视觉关键词</p>
+          <div class="chips" id="keywordList"></div>
+          <p class="note-label spaced">润色思路</p>
+          <ul class="rationale" id="rationaleList"></ul>
+          <p class="note-label spaced">负面约束</p>
+          <p class="negative-text" id="negativeText"></p>
+        </section>
+      </div>
+      <footer class="dialog-foot">
+        <p>提示词与语料均由本地知识库实时检索生成</p>
+        <div>
+          <button class="line-btn" id="copyPrompt" type="button">复制提示词</button>
+          <button class="dialog-primary" id="usePrompt" type="button">用此提示词生成</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <aside class="drawer" id="knowledgeDrawer" aria-hidden="true">
+    <div class="drawer-scrim" id="drawerScrim"></div>
+    <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="美学知识库">
+      <header class="drawer-head">
+        <div>
+          <p class="eyebrow"><span></span>KNOWLEDGE BASE</p>
+          <h2>美学知识库</h2>
+        </div>
+        <button class="dialog-close" id="drawerClose" type="button" aria-label="关闭">×</button>
+      </header>
+
+      <div class="kb-stats">
+        <div><strong id="kbTotal">—</strong><span>条目</span></div>
+        <div><strong id="kbCats">—</strong><span>分类</span></div>
+        <div><strong id="kbTerms">—</strong><span>检索词</span></div>
+      </div>
+
+      <div class="kb-tools">
+        <label class="search-field">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.2 4.2"/></svg>
+          <input id="kbSearch" type="search" placeholder="检索器型、泥料、光影…" autocomplete="off" />
+        </label>
+        <button class="small-btn" id="toggleManual" type="button">手动录入</button>
+      </div>
+
+      <div class="category-chips" id="categoryChips"></div>
+
+      <form class="manual-form" id="manualForm" hidden>
+        <div class="form-row">
+          <input id="manualTitle" name="title" placeholder="语料标题，例如「建盏的兔毫与油滴」" maxlength="100" />
+          <input id="manualCategory" name="category" placeholder="分类，例如 器物·瓷器" list="categoryOptions" maxlength="40" />
+        </div>
+        <datalist id="categoryOptions"></datalist>
+        <textarea id="manualContent" name="content" rows="4" placeholder="粘贴专业知识。系统会自动分句、抽取可复用的视觉描述。" maxlength="12000"></textarea>
+        <div class="form-row">
+          <input id="manualTags" name="tags" placeholder="标签，用逗号分隔（选填）" maxlength="160" />
+          <div class="form-actions">
+            <button class="text-btn" id="cancelManual" type="button">取消</button>
+            <button class="small-primary" type="submit">存入知识库</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="upload-zone" id="uploadZone" role="button" tabindex="0">
+        <input id="fileInput" type="file" accept=".txt,.md,.markdown,.json,text/plain,text/markdown,application/json" multiple hidden />
+        <span class="upload-icon">＋</span>
+        <div>
+          <strong>上传专业语料</strong>
+          <p>拖入或点击选择 .md / .txt / .json，支持多文件</p>
+        </div>
+      </div>
+
+      <div class="kb-list-head">
+        <span>语料条目</span>
+        <span id="kbListMeta">—</span>
+      </div>
+      <div class="kb-list" id="kbList"></div>
+
+      <footer class="drawer-foot">
+        <span>内部测试语料，可替换为专业团队内容</span>
+        <button class="text-danger" id="resetKb" type="button">恢复内置语料</button>
+      </footer>
+    </div>
+  </aside>
+
+  <aside class="drawer" id="historyDrawer" aria-hidden="true">
+    <div class="drawer-scrim" id="historyScrim"></div>
+    <div class="drawer-panel history-panel" role="dialog" aria-modal="true" aria-label="生成记录">
+      <header class="drawer-head">
+        <div>
+          <p class="eyebrow"><span></span>RECENT WORKS</p>
+          <h2>生成记录</h2>
+        </div>
+        <button class="dialog-close" id="historyClose" type="button" aria-label="关闭">×</button>
+      </header>
+
+      <div class="history-summary">
+        <span>最近 <b id="historyTotal">0</b> 条 · 自动保留 10 条</span>
+        <button class="text-danger" id="clearHistory" type="button">清空记录</button>
+      </div>
+
+      <div class="history-list" id="historyList"></div>
+
+      <footer class="drawer-foot">
+        <span>记录保存在本机 data/history.json</span>
+        <span>图片链接可能过期</span>
+      </footer>
+    </div>
+  </aside>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
